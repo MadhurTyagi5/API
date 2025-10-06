@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'viewmodels/leetcode_viewmodel.dart';
-import 'screens/profile_screen.dart';
-import 'screens/problems_screen.dart';
-import 'screens/submissions_screen.dart';
+import 'view/badgespage.dart';
+import 'view/contestpage.dart';
+import 'view/profilepage.dart';
+import 'view/solvedpage.dart';
+import 'view/inputpage.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => LeetCodeViewModel()..init(),
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -19,47 +14,73 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LeetCode Dummy App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: const HomePage(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: MainPage());
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-   const ProfileScreen(),
-   const ProblemsScreen(),
-    const SubmissionsScreen(),
+  final List<Widget> _pages = [
+    InputPage(),
+    ProfilePage(),
+    BadgesPage(),
+    ContestPage(),
+    SolvedPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Problems'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Submissions'),
-        ],
+      body: _pages[_currentIndex],
+
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          backgroundColor: Colors.white,
+          indicatorColor: Colors.white,
+        ),
+        child: NavigationBar(
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (value) {
+            setState(() {
+              _currentIndex = value;
+            });
+          },
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.send_outlined, color: Colors.black),
+              label: "Search",
+              selectedIcon: Icon(Icons.send),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_2_outlined, color: Colors.black),
+              label: "Profile",
+              selectedIcon: Icon(Icons.person_2_rounded),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.emoji_events_outlined, color: Colors.black),
+              label: "Badges",
+              selectedIcon: Icon(Icons.emoji_events),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.timeline_outlined, color: Colors.black),
+              label: "Contest",
+              selectedIcon: Icon(Icons.timeline_rounded),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.task_outlined, color: Colors.black),
+              label: "Solved",
+              selectedIcon: Icon(Icons.task),
+            ),
+          ],
+        ),
       ),
     );
   }
